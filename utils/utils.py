@@ -15,7 +15,6 @@ def get_vacancies(companies) -> list:
     vacancies = []
     the_list = []
     for company in tqdm(companies, ncols=100, desc='Получаем вакансии от компаний'):
-        # print(f'Получаем данные для компании {companies[company]}...')
         params = {
             'employer_id': company,
             'page': 0,
