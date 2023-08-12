@@ -1,7 +1,5 @@
-import json
 import os
 
-import psycopg2
 from utils.utils import *
 from config import config
 
@@ -33,16 +31,17 @@ if __name__ == '__main__':
                 print(f"Таблицы в БД {DB_NAME} успешно созданы...")
 
                 fill_table_companies(cur, companies)
-                print(f"Таблица companies заполнена...")
+                print("Таблица companies заполнена...")
 
                 fill_table_vacancies(cur, list_)
-                print(f"Таблица vacancies заполнена...")
+                print("Таблица vacancies заполнена...")
+
+                add_foreign_key(cur)
+                print("Связывание таблиц успешно...")
 
     except(Exception, psycopg2.DatabaseError) as error:
         print(error)
     finally:
         if conn is not None:
             conn.close()
-    # print(f'Всего вакансий загружено:  {len(list_)}')
-    # with open('vacancies.json', 'w') as f:
-    #     f.write(json.dumps(list_, indent=2, ensure_ascii=False))
+    user_interaction(params)

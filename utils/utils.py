@@ -1,8 +1,10 @@
 import json
-
 import requests
 import psycopg2
+
 from tqdm import tqdm
+
+from classes.dbmanager import DBManager
 
 URL_HH = 'https://api.hh.ru/vacancies'
 
@@ -79,3 +81,39 @@ def fill_table_vacancies(cursor, vacancies):
                        "salary_to, url) VALUES (%s, %s, %s, %s, %s)",
                        (vacancy['company_id'], vacancy['vacancy_name'], vacancy['vacancy_salary_from'],
                         vacancy['vacancy_salary_to'], vacancy['vacancy_url']))
+
+
+def add_foreign_key(cursor):
+    """Добавляем foreign key в таблицу"""
+    cursor.execute("ALTER TABLE vacancies ADD CONSTRAINT fk_vacancies_companies "
+                   "FOREIGN KEY (company_id) REFERENCES companies (company_id);")
+
+
+def user_interaction(params):
+    """Работа с пользователем"""
+    dbmanager = DBManager(params)
+    input("""\nРабота с базой данных... Нажмите Enter для продолжения""")
+    while True:
+        user_input = input("""
+1. Получить список всех компаний и количество вакансий у каждой компании
+2. Получить список всех вакансий с указанием названия компании,
+названия вакансии, зарплаты и ссылки на вакансию
+3. Получить среднюю зарплату по вакансиям
+4. Получить список всех вакансий, у которых зарплата выше средней по всем вакансиям
+5. Получить список всех вакансий по ключевым словам
+0. Выйти из программы
+Ввод пользователя -> """)
+        if user_input == '0':
+            dbmanager.close()
+            return
+        elif user_input == '1':
+            dbmanager.get_companies_and_vacancies_count()
+        elif user_input == '2':
+            dbmanager.get_all_vacancies()
+        elif user_input == '3':
+            dbmanager.get_avg_salary()
+        elif user_input == '4':
+            dbmanager.get_vacancies_with_highest_salary()
+        elif user_input == '5':
+            query = input("Введите ключевые слова через пробел: ")
+            dbmanager.get_vacancies_with_keyword(query)
