@@ -19,7 +19,7 @@
 - SQL-запросы для портала хранятся в файле queries.sql
 
 ### Шаблон для файла конфигурации database.ini:
-```
+```ini
 [postgresql]
 host=localhost
 user=ваше_имя_пользователя
